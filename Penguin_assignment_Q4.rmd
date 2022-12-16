@@ -1,0 +1,82 @@
+---
+title: "Penguin assignment Q4"
+output: html_document
+date: "2022-12-14"
+---
+
+\
+
+**Firstly, set the working directory, either manually, or by using setwd("file path"), to the Penguin Projects folder which can be downloaded from GitHub (https://github.com/penguin1312/PenguinProjects). This is where R will look for the necessary files and folders** 
+
+\
+
+**Use the source function to load the necessary packages and functions from the functions folder:** 
+```{r}
+source ("C:/Users/User/Documents/PenguinProjects/functions/load_libraries.r") #load required libraries
+source ("C:/Users/User/Documents/PenguinProjects/functions/cleaning_functions.r") #contains functions to clean the raw dataset names, remove columns and subset data
+source ("C:/Users/User/Documents/PenguinProjects/functions/plotting_functions.r") #contains functions to plot the data and save figures
+```
+
+\
+
+**Load the raw data from PenguinProjects:**
+```{r}
+penguins_raw <-read.csv ("C:/Users/User/Documents/PenguinProjects/data_raw/penguins_raw.csv")
+```
+
+\
+
+**Clean data (change column names and remove empty rows/columns) by calling the clean_data function:**
+```{r}
+penguins_clean <- clean_data(penguins_raw)
+```
+
+\
+
+**Save clean data as a new dataset:**
+```{r}
+write.csv(penguins_clean,"C:/Users/User/Documents/PenguinProjects/data_clean/penguins_clean.csv")
+```
+
+\
+
+**Subset culmen length, body mass and sex data for Adelie penguins, and remove NAs by calling filter_data function:**
+```{r}
+penguins_culmen_length <- filter_data(penguins_clean)
+```
+
+\
+
+**Generate a linear model to investigate the effect of body mass on beak (culmen) length, and whether there is an interaction between sex and body mass:**
+```{r}
+culmen_length_and_body_mass_model <- lm(culmen_length_mm ~ body_mass_g * sex, penguins_culmen_length) #lm() function used to generate linear model
+```
+
+\
+
+**Conduct an ANOVA statistical test:**
+```{r}
+anova (culmen_length_and_body_mass_model) #calling anova() function generates ANOVA table below
+```
+**Brief analysis from the ANOVA table:** The interaction between body mass and sex does not have a significant effect on beak length in Adelie penguins as the p value (0.8883) is greater than the 0.05 significance level. Body mass alone does have a significant effect on culmen length in Adelie penguins (p value 1.291e-13 < 0.001 significance level) and so does sex (p value 4.72e-05 < 0.001 significance level).
+
+\
+
+**The results of the ANOVA can be visualized via a scatter plot overlaid with regression lines. Generate this figure by calling the plot_culmen_figure function:**
+```{r fig.align = "center"}
+culmen_length_plot <-plot_culmen_figure(penguins_culmen_length) #call plotting function 
+culmen_length_plot 
+```
+
+**Brief analysis of figure:** This figure reflects the results of the ANOVA, as we can see the slopes of the two regression lines for each sex are very similar, and do not cross, supporting the conclusion that there is no interaction between sex and body mass, in terms of effect on beak length. The slopes of the line also indicate a main effect of body mass, and the different y intercepts for each line suggest a main effect of sex. This supports the results from the ANOVA analysis.
+
+\
+
+**Save figure as a vector by calling the save_culmen_figure:**
+```{r results = "hide"}
+save_culmen_figure(penguins_culmen_length,
+                   "C:/Users/User/Documents/PenguinProjects/figures/Culmen_length_figure_vector.svg",
+                   size = 15, scaling = 1) #can adjust size and scale as required
+```
+
+Link to github vector image of plot: https://github.com/penguin1312/PenguinProjects/tree/main/figures
