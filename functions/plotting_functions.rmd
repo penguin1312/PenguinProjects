@@ -1,0 +1,33 @@
+---
+title: "Plotting functions"
+date: "2022-12-16"
+output: html_document
+---
+
+**Function to plot beak length against body mass and sex as a scatter plot, overlaid with regression lines**
+```{r}
+plot_culmen_figure <- function(penguins_culmen_length){
+  penguins_culmen_length %>%
+    ggplot(aes(x =body_mass_g, y=culmen_length_mm, colour = sex))+ #assigning colour to sex in aes() applies colour of plot points based on sex 
+    geom_point(alpha = 0.2)+ #generates slightly transparent scatter plot to increase visibility of regression lines
+    geom_smooth(method = "lm")+ #plots regression lines
+    scale_color_manual(labels = c("Female", "Male"), values = c("orange","purple"))+ #colour assigned to each sex
+    labs (colour = "Legend", x ="Body mass (g)", y = "Culmen length (mm)", title = "Scatter plot of culmen length against body mass, \n fitted with a linear model and including the effect of sex in Adelie penguins", subtitle = "Regression line, including 95% confidence interval")+ #specify labels and axis titles 
+    theme_bw()+ #black and white theme to increase contrast
+    theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) #aligns title and subtitle
+}
+```
+
+\
+**Function to save the figure as a vector (svg) - define size and scaling, does not require a resolution to be specified** 
+```{r}
+save_culmen_figure <- function(penguins_culmen_length, filename, size, res, scaling){
+  size_inches = size/2.54
+  svglite(filename, width = size_inches,
+                    height = size_inches,
+                    scaling = scaling)
+  culmen_length_plot <-plot_culmen_figure(penguins_culmen_length)
+  print(culmen_length_plot)
+  dev.off()
+}
+```
